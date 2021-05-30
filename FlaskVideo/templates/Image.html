@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<HTML>
+<HEAD>
+<meta charset='UTF-8'>
+<TITLE>
+Изображения
+</TITLE>
+<style>
+nav {
+overflow: hidden;
+  background-color: #FFFFFF;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}
+</style>
+</HEAD>
+<BODY>
+<nav>
+<form action='download_image' method='POST' enctype=multipart/form-data>
+<input type='file' class='form-control' name='file' multiple accept='image/*,image/jpg'>
+<input type='submit' value='Upload'>
+</nav>
+{% for i in imgs %}
+<br>
+<img src="static/{{ i.title }}">
+{% endfor %}
+</BODY>
+</HTML>

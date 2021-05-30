@@ -1,0 +1,22 @@
+﻿{% extends 'Up.html' %}
+{% block title %}
+Главная страница
+{% endblock %}
+{% block body %}
+{% for i in videos.items %}
+<p><A href="/video/{{ i.title }}"/a>{{ i.title }}</p>
+{% endfor %}
+{% for page_num in videos.iter_pages(left_edge=1,
+ right_edge=1, left_current=1, right_current=2) %}
+{% if page_num %}
+       {% if videos.page == page_num %}
+<a>{{ page_num }}</a>
+       {% else %}
+<a href="{{ url_for('page', page=page_num) }}"
+class="btn btn-outline-dark">{{ page_num }}</a>
+       {% endif %}
+{% else %}
+    ...
+{% endif %}
+{% endfor %}
+{% endblock %}

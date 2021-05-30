@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<HTML lang='en'>
+<HEAD>
+<meta charset='UTF-8'>
+<link href='/static/Style.css' rel='stylesheet'>
+<TITLE>
+{% block title %}{% endblock %}
+</TITLE>
+</HEAD>
+<BODY bgcolor=BLACK text=AQUA link=BLUE vlink=AQUA alink=RED>
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+  <h1 class="my-0 mr-md-auto font-weight-normal">Сервис на Flask</h1>
+  <nav class="navigation">
+    <a class="p-2 text-dark" href="/main">Главная</a>
+    {% if current_user.is_authenticated %}
+    <a class="p-2 text-dark" href="/download">Загрузить видео</a>
+    <a class="p-2 text-dark" href="/image">Загрузить изображение</a>
+    <a class="p-2 text-dark" href="/logout">Выйти</a>
+    {% else %}
+    <a class="p-2 text-dark" href="/sign">Регистрация</a>
+    <a class="p-2 text-dark" href="/login">Вход</a>
+    {% endif %}
+  </nav>
+</div>
+{% block body %}{% endblock %}
+</BODY>
+</HTML>

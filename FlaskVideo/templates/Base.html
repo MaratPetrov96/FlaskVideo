@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<HTML lang='en'>
+<HEAD>
+<meta charset='UTF-8'>
+<link href='/static/Style.css' rel='stylesheet'>
+<TITLE>
+{{ video.title }}
+</TITLE>
+</HEAD>
+<BODY bgcolor=AQUA>
+<div class='navigation'>
+  <h1 class="my-0 mr-md-auto font-weight-normal">Сервис на Flask</h1>
+  <nav>
+    <a class="p-2 text-dark" href="/main/">Главная</a>
+    {% if current_user.is_authenticated %}
+    <a class="p-2 text-dark" href="/download">Загрузить видео</a>
+    <a class="p-2 text-dark" href="/image">Загрузить изображение</a>
+    {% else %}
+    <a class="p-2 text-dark" href="/sign">Регистрация</a>
+    <a class="p-2 text-dark" href="/login">Вход</a>
+    {% endif %}
+  </nav>
+</div>
+<video controls>
+<source src="/static/{{ video.title }}.mp4" type='video/mp4'>
+</video>
+<p>Загружено:{{ video.user  }}</p>
+
+<p>{{ video.description }}</p>
+{% if current_user.is_authenticated %}
+<form action='comment' method='POST'>
+<p><textarea rows='4' cols='50' placeholder='Ваш комментарий...' name='comment'></textarea></p>
+<p><input type='submit' value='Отправить'></p>
+</form>
+{% endif %}
+<p>Комментариев:{{ comments|length }}</p>
+<ul class ='comments'>
+{% for com in comments %}
+<li><h4 class="commenter">{{ com.username }}</h4><div class="comment">{{ com.body }}</div><div>
+<span>{{ com.date.date() }}</span></div></li>
+{% endfor %}
+</ul>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+<script src="{{ url_for('static', filename='custom.js')}}"></script>-->
+</BODY>
+</HTML>
