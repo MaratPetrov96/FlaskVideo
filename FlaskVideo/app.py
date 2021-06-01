@@ -11,7 +11,6 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from PIL import Image
 from werkzeug.security import generate_password_hash, check_password_hash
-from moviepy.editor import VideoFileClip
 from functools import wraps
 app=Flask(__name__, static_folder='static')
 upload='static'
@@ -25,13 +24,6 @@ db=SQLAlchemy(app)
 migrate = Migrate(app, db)
 login_manager=LoginManager(app)
 login_manager.login_view = '/login'
-'''def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            return redirect(url_for('login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function'''
 class Img(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     title=db.Column(db.String(200), nullable=False)
@@ -58,18 +50,12 @@ class Video(db.Model):
     title=db.Column(db.String(200), nullable=False)
     description=db.Column(db.String(200), default='')
     user=db.Column(db.String(50), nullable=False)
-'''class LoginForm(FlaskForm):
-    username = StringField("login", validators=[Required()])
-    password = PasswordField("password", validators=[Required()])
-    #remember = BooleanField("Remember Me")
-    submit = SubmitField()'''
 db.create_all()
 class AddCommentForm(FlaskForm):
     body = StringField("Body", validators=[InputRequired()])
     submit = SubmitField("Post")
 #host='127.0.0.1',debug=True,use_reloader=False
 #app.add_url_rule('/static/<filename>', 'uploaded_file',build_only=True)
-
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.query(User).get(user_id)
@@ -77,7 +63,6 @@ def load_user(user_id):
 def login():
     login_=request.form.get('login')
     password=request.form.get('password')
-    #form=LoginForm()
     if login_ and password:
         user=User.query.filter_by(name=login_).first()
         try:
@@ -113,7 +98,7 @@ def sign():
     return render_template('Sign.html',current_user=current_user)
 @app.route('/download/downloading',methods=['GET', 'POST'])
 @app.route('/downloading',methods=['GET', 'POST'])
-#@login_required
+@login_required
 def load():
     if request.method=='POST':
         file = request.files['file']
@@ -125,7 +110,6 @@ def load():
             user=User.query.filter_by(id=current_user.id).first()
             path=os.path.join(app.config['UPLOAD_FOLDER'],filename)
             file.save(path)
-            video_duration=VideoFileClip(path).duration
             html=secure_filename('.'.join(file.filename.split('.')[:-1]).replace(' ','_'))
             new=Video(title=html,description=request.form['description'],user=user.name)
             db.session.add(new)
@@ -147,11 +131,8 @@ def page(page):
     if page in (None,1):
         v=Video.query.paginate(1,7,False)
         return redirect(url_for('main_page'))
-    else:
-        v=Video.query.paginate(page,7,False)
-        return render_template('Main.html',current_user=current_user,videos=v)
-    #pages=Pagination(page=page,total=3,search=False,record_name='videos')
-    #return render_template('Main.html',current_user=current_user,pg=pages)
+    v=Video.query.paginate(page,7,False)
+    return render_template('Main.html',current_user=current_user,videos=v)
 @app.route('/video/<string:video_name>/comment',methods=['post'])
 @login_required
 def comment(video_name):
