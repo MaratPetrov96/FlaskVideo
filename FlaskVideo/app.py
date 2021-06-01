@@ -146,6 +146,7 @@ def comment(video_name):
         db.session.commit()
     return redirect(url_for('video',video_name=video_name))
 @app.route('/video/<string:video_name>')
+@app.route('/video/<string:video_name>/')
 def video(video_name):
     try:
         current_video=Video.query.filter_by(title=video_name).first()
