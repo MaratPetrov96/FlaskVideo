@@ -28,7 +28,7 @@
 
 <p>{{ video.description }}</p>
 {% if current_user.is_authenticated %}
-<form action='comment' method='POST'>
+<form action='{{ video.title }}/comment' method='POST'>
 <p><textarea rows='4' cols='50' placeholder='Ваш комментарий...' name='comment'></textarea></p>
 <p><input type='submit' value='Отправить'></p>
 </form>
